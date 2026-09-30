@@ -1,6 +1,6 @@
 # EnergyPulse
 
-Production-grade, high-throughput asynchronous telemetry ingestion pipeline designed for distributed Battery Energy Storage Systems (BESS). 
+Asynchronous telemetry ingestion pipeline designed for distributed Battery Energy Storage Systems (BESS). 
 
 Built with **FastAPI**, **TimescaleDB**, **Celery**, **Redis**, and instrumented for **Prometheus/Grafana** observability.
 
