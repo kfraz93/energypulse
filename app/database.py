@@ -6,8 +6,7 @@ from sqlalchemy.orm import DeclarativeBase
 
 # Postgresql connection string for Asyncpg
 DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql+asyncpg://postgres:postgres@127.0.0.1:5433/energypulse"
+    "DATABASE_URL", "postgresql+asyncpg://postgres:postgres@127.0.0.1:5433/energypulse"
 )
 
 # Create the async engine
@@ -20,9 +19,11 @@ AsyncSessionLocal = async_sessionmaker(
     expire_on_commit=False,
 )
 
+
 # Base class for SQLAlchemy 2.0 models
 class Base(DeclarativeBase):
     pass
+
 
 # FastAPI dependency to inject an async session per request
 async def get_db_session() -> AsyncIterator[AsyncSession]:

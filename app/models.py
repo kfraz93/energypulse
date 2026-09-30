@@ -13,8 +13,10 @@ class TelemetryRecord(Base):
     device_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     power_kw: Mapped[float] = mapped_column(Float, nullable=False)
     state_of_charge: Mapped[Float] = mapped_column(Float, nullable=False)
-    recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True),
-                                                  nullable=False)
+    recorded_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
     # Audit timestamp for when it hit our ingestion pipeline
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True),
-                                                 server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )

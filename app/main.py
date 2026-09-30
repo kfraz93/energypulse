@@ -19,15 +19,12 @@ from app.idempotency import check_idempotency, save_idempotency_response
 from app.models import TelemetryRecord
 
 # Sentry Error tracking Initialization
-SENTRY_DSN = os.getenv("SENTY_DSN", "") # Optional in dev required in prod
+SENTRY_DSN = os.getenv("SENTY_DSN", "")  # Optional in dev required in prod
 if SENTRY_DSN:
     sentry_sdk.init(
         dsn=SENTRY_DSN,
-        integrations=[
-            FastApiIntegration(),
-            SqlalchemyIntegration()
-        ],
-        traces_sample_rate=1.0, # 100% tace rate for dev/testing
+        integrations=[FastApiIntegration(), SqlalchemyIntegration()],
+        traces_sample_rate=1.0,  # 100% tace rate for dev/testing
         environment=os.getenv("APP_ENV", "development"),
     )
 
@@ -49,6 +46,7 @@ app = FastAPI(
 Instrumentator().instrument(app).expose(app, endpoint="/metrics")
 
 # --- Dependency Injection Mock ---
+
 
 class Settings:
     app_env: str = "development"
@@ -158,8 +156,10 @@ async def ingest_telemetry(
         f"| Power: {payload.power_kw} kW"
     )
     if abs(payload.power_kw) > settings.max_power_limit_kw:
-        logger.error(f"Power limit violation: {payload.power_kw} kW exceeds "
-                     f"limit of {settings.max_power_limit_kw} kW")
+        logger.error(
+            f"Power limit violation: {payload.power_kw} kW exceeds "
+            f"limit of {settings.max_power_limit_kw} kW"
+        )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Power {payload.power_kw} kW exceeds environment safety limit of "
@@ -173,7 +173,7 @@ async def ingest_telemetry(
         recorded_at=payload.recorded_at,
     )
     db.add(db_record)
-    await db.flush() # Flushes to generate IDs/timestamps without committing fully yet
+    await db.flush()  # Flushes to generate IDs/timestamps without committing fully yet
 
     # trigger the Celery background task asynchronously
     task = process_telemetry_async.delay(payload.device_id, payload.power_kw)
@@ -209,7 +209,8 @@ async def ingest_legacy_telemetry(
     )
     if abs(parsed_power) > settings.max_power_limit_kw:
         logger.warning(
-            f"Derived legacy power {parsed_power} kW exceeded safety threshold.")
+            f"Derived legacy power {parsed_power} kW exceeded safety threshold."
+        )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Derived legacy power {parsed_power} kW exceeds limit of"

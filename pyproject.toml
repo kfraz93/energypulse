@@ -18,13 +18,14 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pre-commit>=4.6.2",
     "pytest>=9.1.1",
     "ruff>=0.16.9",
 ]
 
 [tool.ruff]
 # Target Python version
-target-version = "py313"
+target-version = "py312"
 line-length = 88
 
 [tool.ruff.lint]

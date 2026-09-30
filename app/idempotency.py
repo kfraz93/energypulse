@@ -6,8 +6,9 @@ from fastapi import Header, HTTPException, status
 # Initializing async Redis client for idempotency checks
 redis_client = aioredis.from_url("redis://localhost:6379/0", decode_responses=True)
 
+
 async def check_idempotency(
-        idempotency_key: str | None = Header(default=None, alias="Idempotency-Key")
+    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
 ) -> str | None:
     """
     Dependency that checks if an incoming request contains an Idempotency-Key.
@@ -30,14 +31,16 @@ async def check_idempotency(
             detail={
                 "status": "replayed",
                 "message": "Duplicate request detected. Returning cached"
-                           " idempotent response",
-                "cached_payload": cached_json
-            }
+                " idempotent response",
+                "cached_payload": cached_json,
+            },
         )
     return idempotency_key
 
-async def save_idempotency_response(idempotency_key: str | None, response_data: dict,
-                                    expire_seconds: int = 86400):
+
+async def save_idempotency_response(
+    idempotency_key: str | None, response_data: dict, expire_seconds: int = 86400
+):
     """
     Saves the successful response payload against the idempotency key in Redis
      for 24 hours.
