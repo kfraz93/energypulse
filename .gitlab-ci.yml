@@ -1,0 +1,35 @@
+stages:
+  - lint
+  - test
+
+default:
+  image: python:3.13.7-slim
+  before_script:
+    - apt-get update && apt-get install -y --no-install-recommends curl git
+    - curl -LsSf https://astral.sh/uv/install.sh | sh
+    - export PATH="/root/.local/bin:$PATH"
+    - uv sync --frozen
+
+# Stage 1: Fast code quality and Linting
+lint:
+  stage: lint
+  script:
+    - echo "Running Ruff linter..."
+    - uv run ruff check .
+    - uv run ruff format --check .
+
+# Stage 2: Automated testing with TimescaleDb and Redis
+test:
+  stage: test
+  services:
+    - name: timescale/timescaledb:latest-pg16
+      alias: postgres
+    - name: redis:7-alpine
+      alias: redis
+  variables:
+    DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/energypulse
+    CELERY_BROKER_URL: redis://redis:6379/0
+    CELERY_RESULT_BACKEND: redis://redis:6379/0
+  script:
+    - echo "Running Pytest test suite..."
+    - uv run pytest -v --tb=short

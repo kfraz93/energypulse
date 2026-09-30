@@ -1,0 +1,44 @@
+[project]
+name = "energypulse"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "asyncpg>=0.31.0",
+    "celery>=5.6.3",
+    "celery-types==0.26.0",
+    "fastapi>=0.141.1",
+    "prometheus-fastapi-instrumentator>=8.1.0",
+    "pydantic>=2.13.5",
+    "redis>=8.1.0",
+    "sentry-sdk>=2.71.0",
+    "sqlalchemy[asyncio]>=2.1.1",
+    "uvicorn>=0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.9",
+]
+
+[tool.ruff]
+# Target Python version
+target-version = "py313"
+line-length = 88
+
+[tool.ruff.lint]
+# Enable Pyflakes (F), pycodestyle (E/W), isort (I), and modern Python upgrades (UP)
+select = ["E", "F", "I", "UP"]
+ignore = []
+
+[tool.ruff.lint.isort]
+# Tells Ruff that local imports starting with 'app' are first-party
+known-first-party = ["app"]
+
+[tool.ruff.format]
+# Ruff's formatter settings (Black-compatible by default)
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
